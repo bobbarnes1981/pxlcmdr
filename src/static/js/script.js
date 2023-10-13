@@ -39,11 +39,11 @@ function get_effect_config(effect) {
     });
 }
 
-function shutdown {
+function shutdown() {
     // TODO: bootstrap dialog?
     if (confirm('Shutdown?')) {
         jQuery.ajax({
-            url: '/api/v1/shutdown/',
+            url: '/api/v1/shutdown',
             dataType: 'json',
             method: 'PUT',
             success: function(data, textStatus, jqXHR) {

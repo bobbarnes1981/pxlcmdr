@@ -307,6 +307,8 @@ class Lights(Thread):
             if sleep == None:
                 sleep = 1
             time.sleep(sleep)
+        self.pixels.fill([0, 0, 0])
+        self.pixels.show()
     def stop(self):
         self.running = False
     def load_config(self):
@@ -382,6 +384,7 @@ class effect(object):
 
 class shutdown(object):
     def PUT(self):
+        lights.stop()
         os.system('shutdown -h +1')
         return json.dumps({'shutdown': 1})
 
