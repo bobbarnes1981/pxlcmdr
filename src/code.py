@@ -1,6 +1,7 @@
 import board
 import json
 import neopixel
+import os
 import random
 import sqlite3
 import time
@@ -335,8 +336,10 @@ class Website(object):
             '/', 'index',
             '/api/v1/config', 'config',
             '/api/v1/config/([a-zA-Z0-9_-]+)', 'config',
+            '/api/v1/effect', 'effect',
             '/api/v1/effect/([a-zA-Z0-9_-]+)', 'effect',
             '/api/v1/effect/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)', 'effect',
+            '/api/v1/shutdown', 'shutdown',
         )
         self.app = web.application(urls, globals())
     def run(self):
@@ -345,10 +348,11 @@ class Website(object):
 
 class index(object):
     def GET(self):
-        return "<h1>It works!</h1>"
+        render = web.template.render('templates')
+        return render.index(time.time())
 
 class config(object):
-    def GET(self, key = None):
+    def GET(self, key=None):
         if key != None:
             val = lights.get_config()[key]
             return json.dumps({"value":val})
@@ -361,8 +365,12 @@ class config(object):
         return json.dumps(lights.get_config())
 
 class effect(object):
-    def GET(self, effect):
-        return json.dumps(effects[effect].get_config())
+    def GET(self, effect=None):
+        if effect != None:
+            if effect not in effects:
+                return json.dumps({"error":"invalid effect"})
+            return json.dumps(effects[effect].get_config())
+        return json.dumps(list(effects.keys()))
     def PUT(self, effect, key):
         data = json.loads(web.data())
         if effect not in effects:
@@ -371,6 +379,11 @@ class effect(object):
         if result is not True:
             return json.dumps({"error":result})
         return json.dumps(effects[effect].get_config())
+
+class shutdown(object):
+    def PUT(self):
+        os.system('shutdown -h +1')
+        return json.dumps({'shutdown': 1})
 
 website = Website()
 website.run()
