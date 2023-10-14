@@ -130,7 +130,7 @@ function really_shutdown() {
         dataType: 'json',
         method: 'PUT',
         success: function(data, textStatus, jqXHR) {
-            alert('shutting down...');
+            hide_confirm();
         }
     });
 }
