@@ -16,6 +16,14 @@ run the app
 
 sudo .venv/bin/python code.py
 
+auto run at startup
+
+add this line
+
+screen -d -m sudo /home/user/pxlcmdr/src/.venv/bin/python /home/user/pxlcmdr/src/code.py
+
+to /etc/rc.local
+
 # api
 
 get all config

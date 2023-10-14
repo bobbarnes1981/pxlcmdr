@@ -15,6 +15,32 @@ PIN_MAP = {
     'D18': board.D18
 }
 
+CHASE_COLOURS = {
+    'Halloween':
+    [
+        [255, 60, 0],   # orange
+        [0, 128, 0],    # green
+        [128, 0, 128]   # purple
+    ],
+    'Halloween (alt)':
+    [
+        [255, 60, 0],   # orange
+        [0, 128, 0],    # green
+    ],
+    'Christmas':
+    [
+        [255, 0, 0],    # red
+        [0, 128, 0],    # green
+        [128, 128, 128] # white
+    ],
+    'Rainbow':
+    [
+        [255, 0, 0],    # red
+        [0, 128, 0],    # green
+        [0, 128, 0]     # white
+   ]
+}
+
 class ConfigStore(object):
     def __init__(self, db_file, prefix, config_config):
         self.db_file = db_file
@@ -351,7 +377,13 @@ class Website(object):
 class index(object):
     def GET(self):
         render = web.template.render('templates')
-        return render.index(time.time())
+        pins = [ 'D18' ]
+        leds = range(0, 55, 5)
+        orders = [ neopixel.RGB, neopixel.GRB ]
+        brights = map(lambda f: f/10, range(0, 11, 1))
+        effect_options = list(effects.keys())
+        colours = CHASE_COLOURS
+        return render.index(time.time(), pins, leds, orders, brights, effect_options, colours)
 
 class config(object):
     def GET(self, key=None):

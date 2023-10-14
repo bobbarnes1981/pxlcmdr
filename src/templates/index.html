@@ -1,4 +1,4 @@
-$def with (time)
+$def with (time, pins, leds, orders, brights, effects, colours)
 <!DOCTYPE html>
 <html>
     <head>
@@ -27,15 +27,88 @@ $def with (time)
         </nav>
         <main class="container">
             <div class="row">
-                <h1>It works!</h1>
-                <p>$time</p>
-                <div id="effect"></div>
-                <div id="config"></div>
-                <div id="effect-config"></div>
-                <div>
-                    <button class="btn btn-danger" onclick="shutdown();">shutdown</button>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <h1 class="card-header">NeoPixel Configuration</h1>
+                                <div class="card-body">
+                                    <p>$time</p>
+                                    <form id="config">
+                                        <div class="form-group">
+                                        <label for="pin">Output Pin</label>
+                                        <select name="pin" class="form-control">
+                                        $for i in pins:
+                                            <option value="$i">$i</option>
+                                        </select>
+                                        </div>
+                                        <div class="form-group">
+                                        <label for="count">LED Count</label>
+                                        <select name="count" class="form-control">
+                                        $for i in leds:
+                                            <option value="$i">$i</option>
+                                        </select>
+                                        </div>
+                                        <div class="form-group">
+                                        <label for="order">Colour Order</label>
+                                        <select name="order" class="form-control">
+                                        $for i in orders:
+                                            <option value="$i">$i</option>
+                                        </select>
+                                        </div>
+                                        <div class="form-group">
+                                        <label for="bright">Brightness</label>
+                                        <select name="bright" class="form-control">
+                                        $for i in brights:
+                                            <option value="$i">$i</option>
+                                        </select>
+                                        </div>
+                                        <div class="form-group">
+                                        <label for="selected_effect">Effect</label>
+                                        <select name="selected_effect" class="form-control">
+                                        $for i in effects:
+                                            <option value="$i">$i</option>
+                                        </select>
+                                        </div>
+                                    </form>
+                                    <hr/>
+                                    <form id="chase" class="effects" style="display:none;">
+                                        <div class="form-group">
+                                        <label for="colours">Chase Colours</label>
+                                        <select name="colours" class="form-control">
+                                        $for i in colours:
+                                            <option value="$colours[i]">$i</option>
+                                        </select>
+                                        </div>
+                                    </form>
+                                    <div id="effect-config"></div>
+                                </div>
+                                <div class="card-footer text-center">
+                                    <div>
+                                        <button class="btn btn-danger" onclick="show_confirm();">shutdown</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
+        <div class="modal fade" id="confirmModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalLongTitle">Shutdown</h5>
+                        <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close" onclick="hide_confirm();"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you shure?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="hide_confirm();">cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="really_shutdown();">shutdown</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
