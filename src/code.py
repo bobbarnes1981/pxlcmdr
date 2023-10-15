@@ -320,7 +320,7 @@ class Lights(Thread):
         self.load_config()
         self.create()
     def create(self):
-        logging.info('Ligths.create()')
+        logging.info('Lights.create()')
         self.pixels = neopixel.NeoPixel(
             PIN_MAP[self.config['pin']],
             self.config['count'],
