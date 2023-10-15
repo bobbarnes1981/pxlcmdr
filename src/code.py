@@ -1,5 +1,6 @@
 import board
 import json
+import logging
 import neopixel
 import os
 import random
@@ -8,6 +9,9 @@ import time
 import web
 
 from threading import Thread
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 db_file = 'config.db'
 
@@ -53,7 +57,7 @@ class ConfigStore(object):
             res = cur.execute("SELECT val FROM %s_configuration WHERE key = ?;" % self.prefix, (key,))
             c = self.config_config[key]
             if res.fetchone() == None:
-                print('insert default value %s for %s' % (c['default'], key))
+                logging.info('insert default value %s for %s' % (c['default'], key))
                 val = c['default']
                 if 'serialise' in c:
                     val = c['serialise'](val)
@@ -309,12 +313,14 @@ class Lights(Thread):
         }
     }
     def __init__(self, config_store):
+        logging.info('Lights.__init__()')
         Thread.__init__(self)
         self.config_store = config_store
         self.running = True
         self.load_config()
         self.create()
     def create(self):
+        logging.info('Ligths.create()')
         self.pixels = neopixel.NeoPixel(
             PIN_MAP[self.config['pin']],
             self.config['count'],
@@ -322,13 +328,13 @@ class Lights(Thread):
             brightness=self.config['bright'],
             auto_write=False
         )
-        dir(self.pixels)
         self.created = True
     def run(self):
+        logging.info('Lights.run()')
         while self.running:
             if self.created:
                 self.created = False
-                lights_test(self.pixels)
+                #lights_test(self.pixels)
             sleep = effects[self.config['selected_effect']].step(self.pixels)
             if sleep == None:
                 sleep = 1
@@ -336,6 +342,7 @@ class Lights(Thread):
         self.pixels.fill([0, 0, 0])
         self.pixels.show()
     def stop(self):
+        logging.info('Lights.stop()')
         self.running = False
     def load_config(self):
         self.config = self.config_store.load()
@@ -360,6 +367,7 @@ lights = Lights(ConfigStore(db_file, 'lights', Lights.config_config))
 
 class Website(object):
     def __init__(self):
+        logging.info('Website.__init__()')
         urls = (
             '/', 'index',
             '/api/v1/config', 'config',
@@ -371,6 +379,7 @@ class Website(object):
         )
         self.app = web.application(urls, globals())
     def run(self):
+        logging.info('Website.run()')
         lights.start()
         self.app.run()
 
