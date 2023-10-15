@@ -20,7 +20,7 @@ auto run at startup
 
 add this line
 
-screen -d -m bash -c 'cd /home/robert/pxlcmdr/src; sudo /home/robert/pxlcmdr/src/.venv/bin/python /home/robert/pxlcmdr/src/code.py'
+screen -d -m bash -c 'cd /home/robert/pxlcmdr/src && sudo /home/robert/pxlcmdr/src/.venv/bin/python /home/robert/pxlcmdr/src/code.py'
 
 to /etc/rc.local
 
