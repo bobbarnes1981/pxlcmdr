@@ -41,7 +41,7 @@ CHASE_COLOURS = {
     [
         [255, 0, 0],    # red
         [0, 128, 0],    # green
-        [0, 128, 0]     # white
+        [0, 0, 128]     # blue
    ]
 }
 
