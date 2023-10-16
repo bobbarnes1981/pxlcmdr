@@ -142,8 +142,8 @@ class EffectWheel(object):
     def __init__(self):
         self.wheel_offset = 0
     def step(self, pixels):
-        for p in range(0, len(pixels)):
-            idx = (p * 256 // len(pixels)) + self.wheel_offset
+        for p in range(0, pixels.n):
+            idx = (p * 256 // pixels.n) + self.wheel_offset
             pixels[p] = self.wheel(pixels, idx & 255)
         pixels.show()
         self.wheel_offset += 1
@@ -182,11 +182,11 @@ class EffectTwinkle(object):
         self.max_time = 10
         self.twink_pixels = []
     def step(self, pixels):
-        if len(pixels) != len(self.twink_pixels):
+        if pixels.n != len(self.twink_pixels):
             self.twink_pixels.clear()
-            for _ in range(len(pixels)):
+            for _ in range(pixels.n):
                 self.twink_pixels.append(0)
-        for _ in range(len(pixels)):
+        for _ in range(pixels.n):
             r = random.randrange(len(self.twink_pixels))
             t = random.randrange(self.max_time+1)
             if self.twink_pixels[r] == 0:
@@ -224,7 +224,7 @@ class EffectChase(object):
         self.offset = 0
         self.load_config()
     def step(self, pixels):
-        for p in range(0, len(pixels)):
+        for p in range(0, pixels.n):
             num = (p+self.offset) % len(self.config['colours'])
             pixels[p] = self.config['colours'][num]
         pixels.show()
@@ -258,8 +258,8 @@ effects = {
 }
 
 def lights_up(pixels, colour, delay):
-    for p in range(0, len(pixels)+1, +1):
-        if p < len(pixels):
+    for p in range(0, pixels.n+1, +1):
+        if p < pixels.n:
             pixels[p] = colour
         if p > 0:
             pixels[p-1] = (0, 0, 0)
@@ -267,16 +267,16 @@ def lights_up(pixels, colour, delay):
         time.sleep(delay)
 
 def lights_dn(pixels, colour, delay):
-    for p in range(len(pixels)-1, -2, -1):
+    for p in range(pixels.n-1, -2, -1):
         if p > -1:
             pixels[p] = colour
-        if p < len(pixels)-1:
+        if p < pixels.n-1:
             pixels[p+1] = (0, 0, 0)
         pixels.show()
         time.sleep(delay)
 
 def lights_test(pixels):
-    d = 0.5 / len(pixels)
+    d = 0.5 / pixels.n
     lights_up(pixels, (255, 0, 0), d)
     lights_dn(pixels, (255, 0, 0), d)
     lights_up(pixels, (0, 255, 0), d)
