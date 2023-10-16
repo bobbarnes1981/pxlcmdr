@@ -332,13 +332,9 @@ class Lights(Thread):
             brightness=self.config['bright'],
             auto_write=False
         )
-        self.created = True
     def run(self):
         logging.info('Lights.run()')
         while self.running:
-            if self.created:
-                self.created = False
-                #lights_test(self.pixels)
             sleep = effects[self.config['selected_effect']].step(self.pixels)
             if sleep == None:
                 sleep = 1
