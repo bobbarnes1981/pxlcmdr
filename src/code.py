@@ -386,7 +386,7 @@ class index(object):
     def GET(self):
         render = web.template.render('templates')
         pins = [ 'D18' ]
-        leds = [ 10, 20, 30, 40, 48, 50 ]
+        leds = [ 10, 20, 30, 40, 48, 50, 60 ]
         orders = [ neopixel.RGB, neopixel.GRB ]
         brights = map(lambda f: f/10, range(0, 11, 1))
         effect_options = list(effects.keys())
