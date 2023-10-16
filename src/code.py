@@ -323,8 +323,7 @@ class Lights(Thread):
     def create(self):
         logging.info('Lights.create()')
         if self.pixels != None:
-            self.pixels.fill((0, 0, 0))
-            self.pixels.show()
+            self.pixels.deinit()
         self.pixels = neopixel.NeoPixel(
             PIN_MAP[self.config['pin']],
             self.config['count'],
