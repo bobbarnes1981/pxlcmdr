@@ -211,8 +211,8 @@ class EffectChase(object):
             'type': list,
             'default': [
                 [255, 0, 0],
-                [0, 255, 0],
-                [0, 0, 255]
+                [0, 128, 0],
+                [0, 0, 128]
             ],
             'validate': validate_colours,
             'serialise': colours_tostring,
