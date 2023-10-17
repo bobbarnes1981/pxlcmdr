@@ -67,3 +67,14 @@ BODY { "value": "configval" }
  (0, 128, 0),    # green
  (0, 128, 0)     # white
 
+# auto shutdown in cron
+
+create /etc/cron.d/autoshutdown
+
+using shutdown
+
+55 21 * * * root /usr/sbin/shutdown -h now
+
+using api
+
+55 21 * * * root curl -X PUT http://127.0.0.1:8080/api/v1/shutdown
