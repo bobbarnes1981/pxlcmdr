@@ -25,6 +25,17 @@ jQuery(document).ready(function(){
         }
         set_effect_config('chase', key, val);
     });
+    jQuery('#colour select').change(function(e) {
+        var obj = jQuery(e.target);
+        var key = obj.attr('name');
+        var val = obj.val();
+        switch(key) {
+            case 'colour':
+                val = JSON.parse(val);
+                break;
+        }
+        set_effect_config('colour', key, val);
+    });
     get_effects();
     get_config();
 });
@@ -67,9 +78,13 @@ function process_config(data) {
 
 function process_effect_config(effect, data) {
     //jQuery('#effect-config').text(JSON.stringify(data));
-    if (data['colours']) {
+    if (effect = 'chase' && data['colours']) {
         var val = JSON.stringify(data['colours']).replace(new RegExp(",", "g"), ", ");
-        jQuery('#' + effect + ' select[name="colours"]').val(val);
+        jQuery('#chase select[name="colours"]').val(val);
+    }
+    if (effect = 'colour' && data['colour']) {
+        var val = JSON.stringify(data['colour']).replace(new RegExp(",", "g"), ", ");
+        jQuery('#colour select[name="colour"]').val(val);
     }
 }
 

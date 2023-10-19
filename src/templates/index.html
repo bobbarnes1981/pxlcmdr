@@ -1,4 +1,4 @@
-$def with (time, pins, leds, orders, brights, effects, colours)
+$def with (time, pins, leds, orders, brights, effects, colours, colour_colours)
 <!DOCTYPE html>
 <html>
     <head>
@@ -77,6 +77,15 @@ $def with (time, pins, leds, orders, brights, effects, colours)
                                         <select name="colours" class="form-control">
                                         $for i in colours:
                                             <option value="$colours[i]">$i</option>
+                                        </select>
+                                        </div>
+                                    </form>
+                                    <form id="colour" class="effects" style="display:none;">
+                                        <div class="form-group">
+                                        <label for="colour">Chase Colours</label>
+                                        <select name="colour" class="form-control">
+                                        $for i in colour_colours:
+                                            <option value="$colour_colours[i]">$i</option>
                                         </select>
                                         </div>
                                     </form>

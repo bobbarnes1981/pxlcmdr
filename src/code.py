@@ -45,6 +45,17 @@ CHASE_COLOURS = {
    ]
 }
 
+COLOUR_COLOURS = {
+    'Black':    [0, 0, 0],
+    'Blue':     [0, 0, 255],
+    'Green':    [0, 255, 0],
+    'Cyan':     [0, 255, 255],
+    'Red':      [255, 0, 0],
+    'Magenta':  [255, 0, 255],
+    'Yellow':   [255, 255, 0],
+    'White':    [255, 255, 255],
+}
+
 class ConfigStore(object):
     def __init__(self, db_file, prefix, config_config):
         self.db_file = db_file
@@ -92,19 +103,31 @@ def validate_colours(colours):
     if type(colours) is not list:
         return False
     for colour in colours:
-        if type(colour) is not list:
+        if not validate_colour(colour):
             return False
-        if len(colour) != 3:
-            return False
+    return True
+
+def validate_colour(colour):
+    if type(colour) is not list:
+        return False
+    if len(colour) != 3:
+        return False
     return True
 
 def colours_tostring(colours):
     return str(colours)
 
+def colour_tostring(colour):
+    return str(colour);
+
 def colours_fromstring(colours):
     # parse [[0, 0, 0], [1, 1, 1], [2, 2, 2]]
     parts = list(map(lambda s : s.strip("[]"), colours.split("], ")))
     parts = list(map(lambda s : list(map(int, s.split(", "))), parts))
+    return parts
+
+def colour_fromstring(colour):
+    parts = list(map(int, colour.strip("[]").split(", ")))
     return parts
 
 def validate_pin(pin):
@@ -134,6 +157,41 @@ class EffectOff(object):
     def get_config(self):
         return {}
     def set_config(self, key, value):
+        return True
+
+class EffectColour(object):
+    config_config = {
+        'colour': {
+            'type': list,
+            'default': [255, 0, 0],
+            'validate': validate_colour,
+            'serialise': colour_tostring,
+            'deserialise': colour_fromstring,
+        },
+    }
+    def __init__(self, config_store):
+        self.config_store = config_store
+        self.load_config()
+    def step(self, pixels):
+        pixels.fill(self.config['colour'])
+        pixels.show()
+        return 1
+    def load_config(self):
+        self.config = self.config_store.load()
+    def save_config(self):
+        self.config_store.save(self.config)
+    def get_config(self):
+        return self.config
+    def set_config(self, key, value):
+        if key not in self.config:
+            return "wrong key"
+        if type(value) is not self.config_config[key]['type']:
+            return "wrong type"
+        if self.config[key] != value:
+            if not self.config_config[key]['validate'](value):
+                return "invalid %s" % key
+            self.config[key] = value
+            self.save_config()
         return True
 
 class EffectWheel(object):
@@ -254,6 +312,7 @@ effects = {
     'wheel': EffectWheel(),
     'twinkle': EffectTwinkle(),
     'chase': EffectChase(ConfigStore(db_file, 'effect_chase', EffectChase.config_config)),
+    'colour': EffectColour(ConfigStore(db_file, 'effect_colour', EffectColour.config_config)),
     'off': EffectOff(),
 }
 
@@ -391,7 +450,8 @@ class index(object):
         brights = map(lambda f: f/10, range(0, 11, 1))
         effect_options = list(effects.keys())
         colours = CHASE_COLOURS
-        return render.index(time.time(), pins, leds, orders, brights, effect_options, colours)
+        colour_colours = COLOUR_COLOURS
+        return render.index(time.time(), pins, leds, orders, brights, effect_options, colours, colour_colours)
 
 class config(object):
     def GET(self, key=None):
